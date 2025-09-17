@@ -26,13 +26,13 @@ export class ListCompaniesController {
       companySize?: string
       activeTab?:
         | "pending_review"
-        | "resubmitted"
         | "approved"
         | "rejected"
         | "paid"
         | "blocked"
         | "settled"
         | "email_unverified"
+        | "resubmitted"
         | string
     }
 
@@ -58,6 +58,7 @@ export class ListCompaniesController {
           filters.status = "pending"
           filters.isVerified = true
           break
+        
         case "resubmitted":
           filters.status = "resubmitted"
           filters.isVerified = true
@@ -79,6 +80,7 @@ export class ListCompaniesController {
           filters.isVerified = true
           break
         case "settled":
+          filters.status = "paid"  // Settled companies are those with paid status
           filters.isVerified = true
           break
         case "email_unverified":

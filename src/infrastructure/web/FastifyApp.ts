@@ -1,4 +1,4 @@
-import { inject, injectable } from "inversify"
+import { inject, injectable, Container } from "inversify"
 import Fastify, { type FastifyInstance } from "fastify"
 import cors from "@fastify/cors"
 import helmet from "@fastify/helmet"
@@ -39,10 +39,11 @@ import { BlockHRController } from "../../interfaces/controllers/company/BlockHRC
 import { ListHRController } from "../../interfaces/controllers/company/ListHRController.ts"
 import { CreateInterviewerController } from "../../interfaces/controllers/company/CreateInterviewerController.ts"
 import { UpdateCompanyPaymentController } from "../../interfaces/controllers/company/UpdateCompanyPaymentController.ts"
+import { SubmitAdditionalInfoController } from "../../interfaces/controllers/company/SubmitAdditionalInfoController.ts"
 
 import type { IAuthService } from "../../application/interfaces/services/IAuthService.ts"
 import { createAuthPreHandlersFromAuthService } from "../../interfaces/middlewares/auth.ts"
-import { CreateDeveloperProfileController } from "../../interfaces/controllers/developer/index.ts"
+import { CreateDeveloperProfileController, GetDeveloperProfileController } from "../../interfaces/controllers/developer/index.ts"
 import { DomainError } from "../../domain/errors/DomainError.ts"
 
 @injectable()
@@ -83,8 +84,11 @@ export class FastifyApp {
   private listHRController: ListHRController
   private createInterviewerController: CreateInterviewerController
   private updateCompanyPaymentController: UpdateCompanyPaymentController
+  private submitAdditionalInfoController: SubmitAdditionalInfoController
+  
 
   private createDeveloperProfileController: CreateDeveloperProfileController
+  private getDeveloperProfileController: GetDeveloperProfileController
   private authPreHandlers: ReturnType<typeof createAuthPreHandlersFromAuthService>
 
   constructor(
@@ -122,9 +126,13 @@ export class FastifyApp {
     @inject(ListHRController) listHRController: ListHRController,
     @inject(CreateInterviewerController) createInterviewerController: CreateInterviewerController,
     @inject(UpdateCompanyPaymentController) updateCompanyPaymentController: UpdateCompanyPaymentController,
+    @inject(SubmitAdditionalInfoController) submitAdditionalInfoController: SubmitAdditionalInfoController,
+    
 
     @inject(CreateDeveloperProfileController) createDeveloperProfileController: CreateDeveloperProfileController,
+    @inject(GetDeveloperProfileController) getDeveloperProfileController: GetDeveloperProfileController,
     @inject("IAuthService") authService: IAuthService,
+    @inject("Container") container: Container,
   ) {
     this.app = Fastify({
       logger: {
@@ -174,9 +182,19 @@ export class FastifyApp {
     this.listHRController = listHRController
     this.createInterviewerController = createInterviewerController
     this.updateCompanyPaymentController = updateCompanyPaymentController
+    this.submitAdditionalInfoController = submitAdditionalInfoController
+    
 
     this.createDeveloperProfileController = createDeveloperProfileController
-    this.authPreHandlers = createAuthPreHandlersFromAuthService(authService)
+    this.getDeveloperProfileController = getDeveloperProfileController
+    this.authPreHandlers = createAuthPreHandlersFromAuthService(
+      authService,
+      container.get("ICompanyRepository"),
+      container.get("IDeveloperRepository"),
+      container.get("IHRRepository"),
+      container.get("IInterviewerRepository"),
+      container.get("IBlockHistoryRepository")
+    )
     this.setupMiddleware()
     this.setupRoutes()
     this.setupErrorHandler()
@@ -229,6 +247,11 @@ export class FastifyApp {
       onlyDeveloper,
       this.createDeveloperProfileController.execute.bind(this.createDeveloperProfileController),
     )
+    this.app.get(
+      "/developer/profile",
+      onlyDeveloper,
+      this.getDeveloperProfileController.execute.bind(this.getDeveloperProfileController),
+    )
     this.app.get("/admin/developers/list", onlyAdmin, this.listDevelopersController.execute.bind(this.listDevelopersController))
     this.app.get("/admin/companies/list", onlyAdmin, this.listCompaniesController.execute.bind(this.listCompaniesController))
     this.app.post("/admin/developers/block", onlyAdmin, this.blockDeveloperController.execute.bind(this.blockDeveloperController))
@@ -247,6 +270,7 @@ export class FastifyApp {
     this.app.get("/company/hr/list", onlyCompany, this.listHRController.execute.bind(this.listHRController))
     this.app.post("/company/interviewers/create", onlyCompany, this.createInterviewerController.execute.bind(this.createInterviewerController))
     this.app.post("/company/payment", onlyCompany, this.updateCompanyPaymentController.execute.bind(this.updateCompanyPaymentController))
+    this.app.post("/company/submit-additional-info", onlyCompany, this.submitAdditionalInfoController.execute.bind(this.submitAdditionalInfoController))
   }
 
   private setupErrorHandler(): void {

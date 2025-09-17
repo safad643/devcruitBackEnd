@@ -16,6 +16,21 @@ const companySchema = new Schema(
     isBlocked: { type: Boolean, default: false },
     declineReason: { type: String, default: undefined },
     requestedDocuments: { type: [String], default: undefined },
+    additionalDocuments: {
+      type: [
+        new Schema(
+          {
+            name: { type: String, required: true },
+            type: { type: String, enum: ["file", "explanation"], required: true },
+            url: { type: String, default: undefined },
+            text: { type: String, default: undefined },
+          },
+          { _id: false },
+        ),
+      ],
+      default: undefined,
+    },
+    resubmissionNotes: { type: String, default: undefined },
     planName: { type: String, default: undefined },
     expiresAt: { type: Date, default: undefined },
   },

@@ -6,7 +6,15 @@ export interface IEmailService {
     toEmail: string,
     data: { contactName: string; companyName: string; reason?: string; requestedDocuments?: string[] },
   ): Promise<void>
+  sendCompanyResubmitted(
+    toEmail: string,
+    data: { contactName: string; companyName: string; resubmissionNotes?: string },
+  ): Promise<void>
   sendCompanyBlocked(
+    toEmail: string,
+    data: { contactName: string; companyName: string; reason?: string; referenceId?: string },
+  ): Promise<void>
+  sendCompanyUnblocked(
     toEmail: string,
     data: { contactName: string; companyName: string; reason?: string; referenceId?: string },
   ): Promise<void>

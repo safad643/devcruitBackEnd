@@ -31,6 +31,7 @@ import { BlockHRUseCase } from "../application/use-cases/company/BlockHRUseCase.
 import { ListHRUseCase } from "../application/use-cases/company/ListHRUseCase.ts"
 import { CreateInterviewerUseCase } from "../application/use-cases/company/CreateInterviewerUseCase.ts"
 import { UpdateCompanyPaymentUseCase } from "../application/use-cases/company/UpdateCompanyPaymentUseCase.ts"
+ 
 import { RequestPasswordResetUseCase } from "../application/use-cases/auth/RequestPasswordResetUseCase.ts"
 import { ConfirmPasswordResetUseCase } from "../application/use-cases/auth/ConfirmPasswordResetUseCase.ts"
 import { RefreshAccessTokenUseCase } from "../application/use-cases/auth/RefreshAccessTokenUseCase.ts"
@@ -70,9 +71,12 @@ import { BlockHRController } from "../interfaces/controllers/company/BlockHRCont
 import { ListHRController } from "../interfaces/controllers/company/ListHRController.ts"
 import { CreateInterviewerController } from "../interfaces/controllers/company/CreateInterviewerController.ts"
 import { UpdateCompanyPaymentController } from "../interfaces/controllers/company/UpdateCompanyPaymentController.ts"
+import { SubmitAdditionalInfoController } from "../interfaces/controllers/company/SubmitAdditionalInfoController.ts"
 
 import { CreateDeveloperProfileUseCase } from "../application/use-cases/developer/CreateDeveloperProfileUseCase.ts"
+import { GetDeveloperProfileUseCase } from "../application/use-cases/developer/GetDeveloperProfileUseCase.ts"
 import { CreateDeveloperProfileController } from "../interfaces/controllers/developer/CreateDeveloperProfileController.ts"
+import { GetDeveloperProfileController } from "../interfaces/controllers/developer/GetDeveloperProfileController.ts"
 import type { IFileUploadService } from "../application/interfaces/services/IFileUploadService.ts"
 import { FileUploadService } from "./services/FileUploadService.ts"
 import type { IAdminRepository } from "../domain/repositories/IAdminRepository.ts"
@@ -149,12 +153,14 @@ container.bind(BlockHRUseCase).toSelf()
 container.bind(ListHRUseCase).toSelf()
 container.bind(CreateInterviewerUseCase).toSelf()
 container.bind(UpdateCompanyPaymentUseCase).toSelf()
+ 
 container.bind(RequestPasswordResetUseCase).toSelf()
 container.bind(ConfirmPasswordResetUseCase).toSelf()
 container.bind(RefreshAccessTokenUseCase).toSelf()
 container.bind(GoogleAuthUseCase).toSelf()
 
 container.bind(CreateDeveloperProfileUseCase).toSelf()
+container.bind(GetDeveloperProfileUseCase).toSelf()
 
 container.bind(RegisterDeveloperController).toSelf()
 container.bind(RegisterCompanyController).toSelf()
@@ -190,8 +196,11 @@ container.bind(BlockHRController).toSelf()
 container.bind(ListHRController).toSelf()
 container.bind(CreateInterviewerController).toSelf()
 container.bind(UpdateCompanyPaymentController).toSelf()
+container.bind(SubmitAdditionalInfoController).toSelf()
 
 container.bind(CreateDeveloperProfileController).toSelf()
+container.bind(GetDeveloperProfileController).toSelf()
+container.bind("Container").toConstantValue(container)
 container.bind(FastifyApp).toSelf()
 
 export { container }

@@ -20,7 +20,7 @@ export class Company {
     public readonly updatedAt: Date = new Date(),
   ) {}
 
-  getFrontendStatus(): 'pending' | 'approved' | 'rejected' | 'paid' {
+  getFrontendStatus(): 'pending' | 'approved' | 'rejected' | 'paid' | 'settled' {
     switch (this.status) {
       case 'pending':
         return 'pending'
@@ -29,7 +29,7 @@ export class Company {
       case 'declined':
         return 'rejected'
       case 'paid':
-        return 'paid'
+        return 'settled'  // Map paid status to settled for frontend
       case 'resubmitted':
         return 'pending'
       default:

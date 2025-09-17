@@ -117,6 +117,36 @@ export class EmailService implements IEmailService {
     })
   }
 
+  async sendCompanyUnblocked(
+    toEmail: string,
+    data: { contactName: string; companyName: string; reason?: string; referenceId?: string },
+  ): Promise<void> {
+    await this.transporter.sendMail({
+      from: process.env.FROM_EMAIL,
+      to: toEmail,
+      subject: `Account access restored for ${data.companyName}`,
+      html: `
+        <div style="background:#0b1220;padding:24px 0;font-family:Arial,Helvetica,sans-serif;">
+          <table role="presentation" cellspacing="0" cellpadding="0" align="center" width="100%" style="max-width:640px;margin:0 auto;background:#0f172a;border:1px solid #059669;border-radius:10px;">
+            <tr><td style="padding:28px 28px 8px;text-align:center;"><div style="font-weight:800;letter-spacing:.4px;font-size:18px;color:#10b981;">DEVCRUIT</div></td></tr>
+            <tr><td style="padding:0 28px 4px;text-align:center;"><h1 style="margin:8px 0 0;font-size:22px;color:#f8fafc;">Account Access Restored ✅</h1></td></tr>
+            <tr><td style="padding:0 28px 8px;text-align:left;"><p style="margin:8px 0 0;color:#cbd5e1;line-height:1.6;">Hi <strong>${data.contactName}</strong>, great news! Your company <strong>${data.companyName}</strong> has been unblocked and you now have full access to all features.</p>
+              ${data.reason ? `<div style="margin:12px 0 0;padding:12px 14px;background:#1f2937;border:1px solid #10b981;border-radius:8px;color:#a7f3d0;"><div style=\"font-weight:700;margin-bottom:4px;\">Reason</div><div>${data.reason}</div></div>` : ""}
+              ${data.referenceId ? `<p style=\"margin:12px 0 0;font-size:12px;color:#94a3b8;\">Reference ID: ${data.referenceId}</p>` : ""}
+            </td></tr>
+            <tr><td style="padding:0 28px 24px;text-align:center;">
+              <div style="background:#1f2937;border-radius:8px;padding:16px;margin:16px 0;">
+                <p style="margin:0;color:#cbd5e1;font-size:14px;line-height:1.5;">
+                  <strong>Welcome back!</strong> You can now log in and access all employer features on Devcruit.
+                </p>
+              </div>
+            </td></tr>
+          </table>
+        </div>
+      `,
+    })
+  }
+
   async sendDeveloperWarning(
     toEmail: string,
     data: { fullName: string; reason: string; details?: string; expectedResolution?: string; issuedAt?: Date },

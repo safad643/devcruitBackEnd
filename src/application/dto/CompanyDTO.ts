@@ -59,6 +59,8 @@ export interface UpdateCompanyPaymentDTO {
   planName: string;
 }
 
+ 
+
 export interface CompanyListFilters {
   status?: "pending" | "approved" | "declined" | "resubmitted" | "paid" | "blocked";
   paymentStatus?: "paid" | "unpaid";

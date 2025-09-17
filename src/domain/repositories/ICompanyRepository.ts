@@ -19,6 +19,8 @@ export interface CompanyUpdate {
   blockedDetails?: string
   declineReason?: string
   requestedDocuments?: string[]
+  additionalDocuments?: Array<{ name: string; type: 'file' | 'explanation'; url?: string; text?: string }>
+  resubmissionNotes?: string
   planName?: string
   expiresAt?: Date
 }

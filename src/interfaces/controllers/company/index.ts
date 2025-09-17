@@ -5,3 +5,5 @@ export { BlockHRController } from "./BlockHRController.ts"
 export { ListHRController } from "./ListHRController.ts"
 export { CreateInterviewerController } from "./CreateInterviewerController.ts"
 export { UpdateCompanyPaymentController } from "./UpdateCompanyPaymentController.ts"
+export { SubmitAdditionalInfoController } from "./SubmitAdditionalInfoController.ts"
+ 
